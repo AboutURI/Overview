@@ -25,6 +25,13 @@ To start server:
 npm run start
 ```
 
+## API Endpoints
+
+- **POST** `/overview`
+- **GET** `/overview?courseId=id`
+- **PUT** `/overview?courseId=id`
+- **DELETE** `/overview?courseId=id`
+
 ## Requirements
 
 An `nvmrc` file is included if using [nvm](https://github.com/creationix/nvm).
