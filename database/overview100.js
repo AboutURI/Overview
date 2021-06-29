@@ -40,6 +40,6 @@ const create = function() {
   db.save(data);
 };
 
-create();
+
 
 module.exports = create;

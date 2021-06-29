@@ -1,4 +1,4 @@
-const mongoose = require('mongoose').set('debug', true);
+const mongoose = require('mongoose').set('debug', false);
 mongoose.connect('mongodb://localhost/overview', {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -47,7 +47,57 @@ let get = (courseId, callback) => {
     .catch(err => console.log(err));
 };
 
+let post = (data, callback) => {
+  Overview.find({})
+    .sort({ courseId: -1 })
+    .limit(1)
+    .then(docs => {
+        var courseId = docs[0].courseId+1;
+        let entry = new Overview({
+          courseId: courseId,
+          title: data.title,
+          tagline: data.tagline,
+          students: data.students,
+          subjects: data.subjects,
+          author: data.author,
+          thumbnail: data.thumbnail,
+          language: data.language,
+          captions: data.captions
+        });
+        Promise.resolve(entry.save())
+          .then(doc => callback(doc))
+          .catch(err => console.log(err));
+      }
+    );
+};
+
+let put = (courseId, data, callback) => {
+  Overview.find({courseId: courseId})
+    .then(docs => {
+        if(docs.length == 0){
+          post(data, callback);
+        } else {
+          Overview.findOneAndUpdate({courseId: courseId}, data, {new: true, useFindAndModify: false})
+            .then(doc => callback(doc))
+            .catch(err => console.log(err));
+        }
+      }
+    );
+};
+
+let deleteOne = (courseId, callback) => {
+  Overview.deleteOne({courseId: courseId}, (err, result) => {
+    if(err) {
+      console.log(err);
+    } else {
+      callback(result);
+    }
+  })
+};
 
 
 module.exports.save = save;
 module.exports.get = get;
+module.exports.post = post;
+module.exports.put = put;
+module.exports.delete = deleteOne;
