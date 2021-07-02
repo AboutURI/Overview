@@ -1,6 +1,10 @@
 ## MAC files ##
 .DS_Store
 
+## Config Files ##
+/server/seed/couchbase/couchbase.config.js
+/server/seed/postgres/postgres.config.js
+
 ## NPM ##
 npm
 npm-debug.log

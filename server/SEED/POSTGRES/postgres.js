@@ -1,12 +1,8 @@
 const faker = require('faker');
 const { Pool, Client } = require('pg')
-const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'SDCPostgres',
-  password: 'postgres',
-  port: 5432,
-})
+const credentials = require("./postgres.config.js")
+
+const pool = new Pool(credentials)
 
 tableQuery = 'CREATE TABLE overview(id integer NOT NULL, title text, tagline text, students integer, author integer, subjects text[], thumbnail text, language text, captions text[])'
 
@@ -40,16 +36,15 @@ pool
             subjects.push(capitalize(faker.random.word()).replace("'",""));
           }
           tempArr.push(`(${i},'${faker.company.catchPhrase()}','${capitalize(faker.hacker.ingverb()) + ' the ' + faker.hacker.adjective() + ' ' + faker.hacker.noun()}',${Math.floor((Math.random() * 90000)) + 10000},${Math.floor((Math.random() * 9999)) + 1},'{"${subjects.join('","')}"}','${faker.image.abstract()}','English','{"${captions.join('","')}"}')`)
-          if(i%10000==0){
-            let queryText = `INSERT INTO overview VALUES ${tempArr}`;
+          if(i%100000==0){
             try {
+              let queryText = `INSERT INTO overview VALUES ${tempArr};`;
               const res = await pool.query(queryText)
             } catch (err) {
               console.log(err)
             }
             tempArr = []
           }
-          // console.log(queryText)
         }
       })
   })
